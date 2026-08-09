@@ -1,153 +1,49 @@
+require("dotenv").config();
+
 const crypto = require("node:crypto");
 const fs = require("node:fs");
 const http = require("node:http");
 const path = require("node:path");
 const { URL } = require("node:url");
-const { DatabaseSync } = require("node:sqlite");
+const { createClient } = require("@supabase/supabase-js");
 
 const ROOT_DIRECTORY = __dirname;
-const DATA_DIRECTORY = path.join(ROOT_DIRECTORY, "data");
-const DATABASE_PATH = path.join(DATA_DIRECTORY, "queueless.db");
 const PORT = Number(process.env.PORT || 3000);
 const SESSION_DURATION_SECONDS = 60 * 60 * 12;
 const SECURE_COOKIE = process.env.NODE_ENV === "production" ? "; Secure" : "";
-const MOCK_BUSINESS = {
-  slug: "bean-bloom",
-  name: "Bean & Bloom",
-  email: "owner@beanandbloom.lk",
-  password: "BeanBloom!2026",
-  location: "Colombo 07"
-};
+const ACCESS_COOKIE = "queueless_business_access";
+const REFRESH_COOKIE = "queueless_business_refresh";
 
-fs.mkdirSync(DATA_DIRECTORY, { recursive: true });
-const database = new DatabaseSync(DATABASE_PATH);
-database.exec(`
-  PRAGMA foreign_keys = ON;
-  CREATE TABLE IF NOT EXISTS businesses (
-    id INTEGER PRIMARY KEY,
-    slug TEXT NOT NULL UNIQUE,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    password_salt TEXT NOT NULL,
-    location TEXT NOT NULL,
-    is_active INTEGER NOT NULL DEFAULT 1,
-    created_at TEXT NOT NULL
-  );
-  CREATE TABLE IF NOT EXISTS orders (
-    id INTEGER PRIMARY KEY,
-    public_id TEXT NOT NULL UNIQUE,
-    business_id INTEGER NOT NULL,
-    customer_name TEXT NOT NULL,
-    customer_phone TEXT NOT NULL,
-    order_text TEXT NOT NULL,
-    tracking_token TEXT NOT NULL,
-    status TEXT NOT NULL CHECK(status IN ('pending', 'accepted', 'fulfilled', 'cancelled')),
-    cancel_reason TEXT,
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-    accepted_at TEXT,
-    fulfilled_at TEXT,
-    FOREIGN KEY (business_id) REFERENCES businesses(id)
-  );
-  CREATE TABLE IF NOT EXISTS sessions (
-    token TEXT PRIMARY KEY,
-    business_id INTEGER NOT NULL,
-    expires_at TEXT NOT NULL,
-    created_at TEXT NOT NULL,
-    FOREIGN KEY (business_id) REFERENCES businesses(id)
-  );
-  CREATE INDEX IF NOT EXISTS orders_by_business_and_status
-    ON orders (business_id, status, created_at DESC);
-`);
+const SUPABASE_URL = process.env.SUPABASE_URL || "";
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 
-function ensureOrderTrackingTokens() {
-  const columns = database.prepare("PRAGMA table_info(orders)").all();
-  if (!columns.some((column) => column.name === "tracking_token")) {
-    database.exec("ALTER TABLE orders ADD COLUMN tracking_token TEXT");
-  }
-  database.exec("CREATE INDEX IF NOT EXISTS orders_by_tracking_token ON orders(tracking_token)");
+const supabaseIsConfigured = Boolean(
+  SUPABASE_URL &&
+    SUPABASE_ANON_KEY &&
+    SUPABASE_SERVICE_ROLE_KEY &&
+    !SUPABASE_URL.includes("your-project-ref") &&
+    !SUPABASE_ANON_KEY.includes("paste-") &&
+    !SUPABASE_SERVICE_ROLE_KEY.includes("paste-")
+);
 
-  const missingTokens = database
-    .prepare("SELECT id FROM orders WHERE tracking_token IS NULL OR tracking_token = ''")
-    .all();
-  const updateToken = database.prepare("UPDATE orders SET tracking_token = ? WHERE id = ?");
-  for (const order of missingTokens) {
-    updateToken.run(crypto.randomBytes(24).toString("base64url"), order.id);
-  }
+const supabaseAdmin = supabaseIsConfigured
+  ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false }
+    })
+  : null;
+
+const supabaseAuth = supabaseIsConfigured
+  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false }
+    })
+  : null;
+
+function requireSupabase(response) {
+  if (supabaseIsConfigured) return true;
+  sendError(response, 500, "Add your Supabase keys to .env, then restart the server.");
+  return false;
 }
-
-ensureOrderTrackingTokens();
-
-function hashPassword(password, salt) {
-  return crypto.scryptSync(password, salt, 64).toString("hex");
-}
-
-function seedDatabase() {
-  const existingBusiness = database
-    .prepare("SELECT id FROM businesses WHERE email = ?")
-    .get(MOCK_BUSINESS.email);
-
-  if (!existingBusiness) {
-    const passwordSalt = crypto.randomBytes(16).toString("hex");
-    database
-      .prepare(
-        `INSERT INTO businesses (slug, name, email, password_hash, password_salt, location, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`
-      )
-      .run(
-        MOCK_BUSINESS.slug,
-        MOCK_BUSINESS.name,
-        MOCK_BUSINESS.email,
-        hashPassword(MOCK_BUSINESS.password, passwordSalt),
-        passwordSalt,
-        MOCK_BUSINESS.location,
-        new Date().toISOString()
-      );
-  }
-
-  const business = database
-    .prepare("SELECT id FROM businesses WHERE slug = ?")
-    .get(MOCK_BUSINESS.slug);
-  const orderCount = database
-    .prepare("SELECT COUNT(*) AS count FROM orders WHERE business_id = ?")
-    .get(business.id).count;
-
-  if (orderCount === 0) {
-    const now = Date.now();
-    const sampleOrders = [
-      ["A-01", "Kavindu Silva", "+94771234567", "Mocha, cheese toastie", "fulfilled", null, 3],
-      ["A-02", "Leah Wijesinghe", "+94779876543", "2 cold brews", "fulfilled", null, 2],
-      ["A-03", "Rishi Patel", "+94775551234", "Double espresso", "cancelled", "Customer request", 1]
-    ];
-    const insertOrder = database.prepare(
-      `INSERT INTO orders (
-        public_id, business_id, customer_name, customer_phone, order_text, tracking_token, status,
-        cancel_reason, created_at, updated_at, accepted_at, fulfilled_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    );
-
-    for (const [publicId, customerName, customerPhone, orderText, status, cancelReason, minutesAgo] of sampleOrders) {
-      const timestamp = new Date(now - minutesAgo * 60 * 1000).toISOString();
-      insertOrder.run(
-        publicId,
-        business.id,
-        customerName,
-        customerPhone,
-        orderText,
-        crypto.randomBytes(24).toString("base64url"),
-        status,
-        cancelReason,
-        timestamp,
-        timestamp,
-        status === "fulfilled" ? timestamp : null,
-        status === "fulfilled" ? timestamp : null
-      );
-    }
-  }
-}
-
-seedDatabase();
 
 function sendJson(response, statusCode, payload, headers = {}) {
   response.writeHead(statusCode, {
@@ -196,38 +92,12 @@ function parseCookies(request) {
   );
 }
 
-function createSession(businessId) {
-  const token = crypto.randomBytes(32).toString("hex");
-  const now = new Date();
-  const expiresAt = new Date(now.getTime() + SESSION_DURATION_SECONDS * 1000).toISOString();
-  database
-    .prepare("INSERT INTO sessions (token, business_id, expires_at, created_at) VALUES (?, ?, ?, ?)")
-    .run(token, businessId, expiresAt, now.toISOString());
-  return token;
+function cookieHeader(name, value, maxAge = SESSION_DURATION_SECONDS) {
+  return `${name}=${encodeURIComponent(value)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}${SECURE_COOKIE}`;
 }
 
-function getSession(request) {
-  const { queueless_business_session: token } = parseCookies(request);
-  if (!token) return null;
-
-  const session = database
-    .prepare(
-      `SELECT sessions.token, businesses.id, businesses.name, businesses.email, businesses.location
-       FROM sessions
-       JOIN businesses ON businesses.id = sessions.business_id
-       WHERE sessions.token = ? AND sessions.expires_at > ?`
-    )
-    .get(token, new Date().toISOString());
-  return session || null;
-}
-
-function requireSession(request, response) {
-  const session = getSession(request);
-  if (!session) {
-    sendError(response, 401, "Please sign in to access the business dashboard.");
-    return null;
-  }
-  return session;
+function clearCookieHeader(name) {
+  return `${name}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0${SECURE_COOKIE}`;
 }
 
 function orderPayload(order, includeTrackingToken = false) {
@@ -243,38 +113,85 @@ function orderPayload(order, includeTrackingToken = false) {
     updatedAt: order.updated_at,
     acceptedAt: order.accepted_at,
     fulfilledAt: order.fulfilled_at,
-    business: order.business_name
-      ? { name: order.business_name, location: order.business_location }
+    business: order.businesses
+      ? { name: order.businesses.name, location: order.businesses.location }
       : undefined
   };
   if (includeTrackingToken) payload.trackingToken = order.tracking_token;
   return payload;
 }
 
-function getNextPublicId() {
-  const latest = database.prepare("SELECT COALESCE(MAX(id), 0) AS id FROM orders").get();
-  return `A-${String(latest.id + 1).padStart(2, "0")}`;
+async function getSession(request, response) {
+  if (!requireSupabase(response)) return null;
+
+  const cookies = parseCookies(request);
+  const accessToken = cookies[ACCESS_COOKIE];
+  if (!accessToken) return null;
+
+  const { data, error } = await supabaseAdmin.auth.getUser(accessToken);
+  if (error || !data.user) return null;
+
+  const { data: business, error: businessError } = await supabaseAdmin
+    .from("businesses")
+    .select("id, name, email, location")
+    .eq("owner_id", data.user.id)
+    .eq("is_active", true)
+    .single();
+
+  if (businessError || !business) return null;
+  return { user: data.user, business };
 }
 
-function getOrderWithBusiness(publicId) {
-  return database
-    .prepare(
-      `SELECT orders.*, businesses.name AS business_name, businesses.location AS business_location
-       FROM orders
-       JOIN businesses ON businesses.id = orders.business_id
-       WHERE orders.public_id = ?`
-    )
-    .get(publicId);
+async function requireSession(request, response) {
+  const session = await getSession(request, response);
+  if (!session) {
+    sendError(response, 401, "Please sign in to access the business dashboard.");
+    return null;
+  }
+  return session;
+}
+
+async function getNextPublicId() {
+  const { count, error } = await supabaseAdmin
+    .from("orders")
+    .select("id", { count: "exact", head: true });
+  if (error) throw error;
+  return `A-${String((count || 0) + 1).padStart(2, "0")}`;
+}
+
+async function getOrderWithBusiness(publicId) {
+  const { data, error } = await supabaseAdmin
+    .from("orders")
+    .select("*, businesses(name, location)")
+    .eq("public_id", publicId)
+    .single();
+  if (error) return null;
+  return data;
+}
+
+function isSameSriLankaDate(value) {
+  const sriLankaDate = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Colombo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+  return sriLankaDate.format(new Date(value)) === sriLankaDate.format(new Date());
 }
 
 async function handleApi(request, response, url) {
   const { pathname } = url;
 
+  if (!requireSupabase(response)) return;
+
   if (request.method === "GET" && pathname === "/api/businesses") {
-    const businesses = database
-      .prepare("SELECT slug, name, location FROM businesses WHERE is_active = 1 ORDER BY name")
-      .all();
-    return sendJson(response, 200, { businesses });
+    const { data, error } = await supabaseAdmin
+      .from("businesses")
+      .select("slug, name, location")
+      .eq("is_active", true)
+      .order("name");
+    if (error) return sendError(response, 500, error.message);
+    return sendJson(response, 200, { businesses: data });
   }
 
   if (request.method === "POST" && pathname === "/api/orders") {
@@ -291,28 +208,39 @@ async function handleApi(request, response, url) {
       return sendError(response, 400, "One or more order details are too long.");
     }
 
-    const business = database
-      .prepare("SELECT id, name, location FROM businesses WHERE slug = ? AND is_active = 1")
-      .get(businessSlug);
-    if (!business) return sendError(response, 404, "That store is not accepting orders right now.");
+    const { data: business, error: businessError } = await supabaseAdmin
+      .from("businesses")
+      .select("id, name, location")
+      .eq("slug", businessSlug)
+      .eq("is_active", true)
+      .single();
+    if (businessError || !business) return sendError(response, 404, "That store is not accepting orders right now.");
 
     const now = new Date().toISOString();
-    const publicId = getNextPublicId();
+    const publicId = await getNextPublicId();
     const trackingToken = crypto.randomBytes(24).toString("base64url");
-    const result = database
-      .prepare(
-        `INSERT INTO orders (
-          public_id, business_id, customer_name, customer_phone, order_text, tracking_token, status, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?)`
-      )
-      .run(publicId, business.id, customerName, customerPhone, orderText, trackingToken, now, now);
-    const order = database.prepare("SELECT * FROM orders WHERE id = ?").get(result.lastInsertRowid);
+    const { data: order, error } = await supabaseAdmin
+      .from("orders")
+      .insert({
+        public_id: publicId,
+        business_id: business.id,
+        customer_name: customerName,
+        customer_phone: customerPhone,
+        order_text: orderText,
+        tracking_token: trackingToken,
+        status: "pending",
+        created_at: now,
+        updated_at: now
+      })
+      .select()
+      .single();
+    if (error) return sendError(response, 500, error.message);
     return sendJson(response, 201, { order: orderPayload(order, true) });
   }
 
   const customerOrderMatch = pathname.match(/^\/api\/orders\/([A-Za-z0-9-]+)$/);
   if (request.method === "GET" && customerOrderMatch) {
-    const order = getOrderWithBusiness(customerOrderMatch[1]);
+    const order = await getOrderWithBusiness(customerOrderMatch[1]);
     if (!order) return sendError(response, 404, "Order not found.");
     const trackingToken = url.searchParams.get("token") || "";
     const receivedToken = Buffer.from(trackingToken);
@@ -321,16 +249,19 @@ async function handleApi(request, response, url) {
       return sendError(response, 404, "Order not found.");
     }
 
-    const position = database
-      .prepare(
-        `SELECT COUNT(*) AS count FROM orders
-         WHERE business_id = ? AND status IN ('pending', 'accepted') AND created_at <= ?`
-      )
-      .get(order.business_id, order.created_at).count;
+    const { count, error } = await supabaseAdmin
+      .from("orders")
+      .select("id", { count: "exact", head: true })
+      .eq("business_id", order.business_id)
+      .in("status", ["pending", "accepted"])
+      .lte("created_at", order.created_at);
+    if (error) return sendError(response, 500, error.message);
+
+    const queuePosition = ["fulfilled", "cancelled"].includes(order.status) ? 0 : count || 0;
     return sendJson(response, 200, {
       order: orderPayload(order),
-      queuePosition: order.status === "fulfilled" || order.status === "cancelled" ? 0 : position,
-      estimatedWaitMinutes: order.status === "pending" ? Math.max(8, position * 5) : Math.max(5, position * 5)
+      queuePosition,
+      estimatedWaitMinutes: order.status === "pending" ? Math.max(8, queuePosition * 5) : Math.max(5, queuePosition * 5)
     });
   }
 
@@ -338,77 +269,76 @@ async function handleApi(request, response, url) {
     const payload = await readJson(request);
     const email = String(payload.email || "").trim().toLowerCase();
     const password = String(payload.password || "");
-    const business = database
-      .prepare("SELECT * FROM businesses WHERE email = ? AND is_active = 1")
-      .get(email);
-    const receivedHash = business ? hashPassword(password, business.password_salt) : "";
-    const passwordIsCorrect = Boolean(
-      business &&
-        crypto.timingSafeEqual(
-          Buffer.from(receivedHash, "hex"),
-          Buffer.from(business.password_hash, "hex")
-        )
-    );
-    if (!passwordIsCorrect) return sendError(response, 401, "Incorrect email or password.");
+    const { data, error } = await supabaseAuth.auth.signInWithPassword({ email, password });
+    if (error || !data.session) return sendError(response, 401, "Incorrect email or password.");
 
-    const token = createSession(business.id);
-    return sendJson(
-      response,
-      200,
-      { business: { name: business.name, email: business.email, location: business.location } },
-      {
-        "Set-Cookie": `queueless_business_session=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${SESSION_DURATION_SECONDS}${SECURE_COOKIE}`
-      }
-    );
+    const { data: business, error: businessError } = await supabaseAdmin
+      .from("businesses")
+      .select("name, email, location")
+      .eq("owner_id", data.user.id)
+      .eq("is_active", true)
+      .single();
+    if (businessError || !business) return sendError(response, 403, "No active business is connected to this account.");
+
+    return sendJson(response, 200, { business }, {
+      "Set-Cookie": [
+        cookieHeader(ACCESS_COOKIE, data.session.access_token, data.session.expires_in || SESSION_DURATION_SECONDS),
+        cookieHeader(REFRESH_COOKIE, data.session.refresh_token, 60 * 60 * 24 * 30)
+      ]
+    });
   }
 
   if (request.method === "POST" && pathname === "/api/auth/logout") {
-    const { queueless_business_session: token } = parseCookies(request);
-    if (token) database.prepare("DELETE FROM sessions WHERE token = ?").run(token);
+    const { [ACCESS_COOKIE]: accessToken } = parseCookies(request);
+    if (accessToken) await supabaseAdmin.auth.admin.signOut(accessToken).catch(() => {});
     return sendJson(response, 200, { ok: true }, {
-      "Set-Cookie": `queueless_business_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0${SECURE_COOKIE}`
+      "Set-Cookie": [clearCookieHeader(ACCESS_COOKIE), clearCookieHeader(REFRESH_COOKIE)]
     });
   }
 
   if (request.method === "GET" && pathname === "/api/auth/me") {
-    const session = requireSession(request, response);
+    const session = await requireSession(request, response);
     if (!session) return;
     return sendJson(response, 200, {
-      business: { name: session.name, email: session.email, location: session.location }
+      business: {
+        name: session.business.name,
+        email: session.business.email,
+        location: session.business.location
+      }
     });
   }
 
   if (request.method === "GET" && pathname === "/api/business/orders") {
-    const session = requireSession(request, response);
+    const session = await requireSession(request, response);
     if (!session) return;
-    const orders = database
-      .prepare("SELECT * FROM orders WHERE business_id = ? ORDER BY created_at DESC")
-      .all(session.id)
-      .map(orderPayload);
+    const { data: orders, error } = await supabaseAdmin
+      .from("orders")
+      .select("*")
+      .eq("business_id", session.business.id)
+      .order("created_at", { ascending: false });
+    if (error) return sendError(response, 500, error.message);
+
     const stats = { pending: 0, accepted: 0, fulfilled: 0, cancelled: 0 };
-    const todayStats = database
-      .prepare(
-        `SELECT status, COUNT(*) AS count
-         FROM orders
-         WHERE business_id = ?
-           AND date(created_at, '+5 hours', '+30 minutes') = date('now', '+5 hours', '+30 minutes')
-         GROUP BY status`
-      )
-      .all(session.id);
-    for (const row of todayStats) stats[row.status] = row.count;
-    return sendJson(response, 200, { orders, stats });
+    for (const order of orders) {
+      if (isSameSriLankaDate(order.created_at)) stats[order.status] += 1;
+    }
+    return sendJson(response, 200, { orders: orders.map(orderPayload), stats });
   }
 
-  const businessOrderMatch = pathname.match(/^\/api\/business\/orders\/(\d+)$/);
+  const businessOrderMatch = pathname.match(/^\/api\/business\/orders\/([A-Fa-f0-9-]+)$/);
   if (request.method === "PATCH" && businessOrderMatch) {
-    const session = requireSession(request, response);
+    const session = await requireSession(request, response);
     if (!session) return;
     const payload = await readJson(request);
     const action = String(payload.action || "");
-    const order = database
-      .prepare("SELECT * FROM orders WHERE id = ? AND business_id = ?")
-      .get(Number(businessOrderMatch[1]), session.id);
-    if (!order) return sendError(response, 404, "Order not found.");
+
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from("orders")
+      .select("*")
+      .eq("id", businessOrderMatch[1])
+      .eq("business_id", session.business.id)
+      .single();
+    if (orderError || !order) return sendError(response, 404, "Order not found.");
 
     let nextStatus;
     if (action === "accept" && order.status === "pending") nextStatus = "accepted";
@@ -417,16 +347,21 @@ async function handleApi(request, response, url) {
     if (!nextStatus) return sendError(response, 400, "That action is not available for this order.");
 
     const now = new Date().toISOString();
-    database
-      .prepare(
-        `UPDATE orders
-         SET status = ?, updated_at = ?, accepted_at = CASE WHEN ? = 'accepted' THEN ? ELSE accepted_at END,
-             fulfilled_at = CASE WHEN ? = 'fulfilled' THEN ? ELSE fulfilled_at END,
-             cancel_reason = CASE WHEN ? = 'cancelled' THEN 'Store cancelled' ELSE cancel_reason END
-         WHERE id = ?`
-      )
-      .run(nextStatus, now, nextStatus, now, nextStatus, now, nextStatus, order.id);
-    const updatedOrder = database.prepare("SELECT * FROM orders WHERE id = ?").get(order.id);
+    const patch = {
+      status: nextStatus,
+      updated_at: now
+    };
+    if (nextStatus === "accepted") patch.accepted_at = now;
+    if (nextStatus === "fulfilled") patch.fulfilled_at = now;
+    if (nextStatus === "cancelled") patch.cancel_reason = "Store cancelled";
+
+    const { data: updatedOrder, error } = await supabaseAdmin
+      .from("orders")
+      .update(patch)
+      .eq("id", order.id)
+      .select()
+      .single();
+    if (error) return sendError(response, 500, error.message);
     return sendJson(response, 200, { order: orderPayload(updatedOrder) });
   }
 
@@ -450,7 +385,7 @@ function serveStatic(response, url) {
   const filePath = path.resolve(ROOT_DIRECTORY, `.${requestedPath}`);
   const relativePath = path.relative(ROOT_DIRECTORY, filePath);
   const requestedSegments = relativePath.split(path.sep);
-  const blockedFiles = new Set(["server.js", "package.json", "README.md"]);
+  const blockedFiles = new Set(["server.js", "package.json", "README.md", ".env"]);
   const isBlocked = requestedSegments.some((segment) => segment === "data" || segment.startsWith(".")) || blockedFiles.has(relativePath);
   if (relativePath.startsWith("..") || path.isAbsolute(relativePath) || isBlocked) {
     response.writeHead(403).end("Forbidden");
@@ -495,5 +430,5 @@ const server = http.createServer(async (request, response) => {
 
 server.listen(PORT, () => {
   console.log(`Queueless is running at http://localhost:${PORT}/queless.html`);
-  console.log(`Demo business login: ${MOCK_BUSINESS.email} / ${MOCK_BUSINESS.password}`);
+  if (!supabaseIsConfigured) console.log("Supabase is not configured yet. Add keys to .env and restart.");
 });
