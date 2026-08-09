@@ -3,8 +3,20 @@
     "cleanUrls": true,
     "rewrites": [
         {
+            "source": "/api/:path*",
+            "destination": "/api/[...path].js"
+        },
+        {
             "source": "/",
             "destination": "/queless.html"
+        },
+        {
+            "source": "/business",
+            "destination": "/business-portal/index.html"
+        },
+        {
+            "source": "/business-portal",
+            "destination": "/business-portal/index.html"
         }
     ]
 }
