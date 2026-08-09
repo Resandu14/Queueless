@@ -1,0 +1,13 @@
+.btn-ghost{
+
+    background:transparent;
+
+    color:var(--text);
+
+}
+
+.btn-ghost:hover{
+
+    background:#F3F4F6;
+
+}

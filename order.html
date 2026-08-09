@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Queueless | Place your order</title>
+    <link rel="stylesheet" href="components/flow-pages.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="nav-shell">
+        <img class="corner corner-left" src="/public/curve.svg" alt="" />
+
+        <nav class="navbar">
+          <a href="queless.html" class="logo">Queueless</a>
+
+          <ul class="nav-links">
+            <li><a href="queless.html">Home</a></li>
+            <li><a href="order.html">Order</a></li>
+            <li><a href="queue.html">Queue</a></li>
+            <li><a href="complete.html">Done</a></li>
+          </ul>
+
+          <a href="queue.html" class="btn btn-secondary">Track order</a>
+        </nav>
+
+        <img class="corner corner-right" src="/public/curve.svg" alt="" />
+      </div>
+    </header>
+
+    <main class="flow-main">
+      <section class="flow-shell">
+        <article class="panel order-panel">
+          <p class="panel-step">02</p>
+          <h2>Place your order</h2>
+
+          <form class="form-stack" action="queue.html">
+            <label class="field">
+              Store
+              <select aria-label="Choose a store">
+                <option>Bean &amp; Bloom</option>
+                <option>FreshMart Express</option>
+                <option>City Bakes</option>
+              </select>
+            </label>
+
+            <label class="field">
+              Your order
+              <textarea
+                aria-label="Describe your order"
+                placeholder="Example: 2 iced lattes, one without sugar"
+              ></textarea>
+            </label>
+
+            <button class="primary-action" type="submit">Place order</button>
+          </form>
+        </article>
+
+        <div class="flow-copy">
+          <p class="flow-kicker">Describe order</p>
+          <h1>Tell the store exactly what to prepare.</h1>
+          <p>
+            This demo uses mock order data. After placing the order, the next
+            screen shows a sample queue number and estimated wait time.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="flow-footer">Mock data only for the hackathon prototype.</footer>
+  </body>
+</html>

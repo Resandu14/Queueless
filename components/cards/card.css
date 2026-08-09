@@ -1,0 +1,47 @@
+.card {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 2.4rem;
+
+    background: #ffffff;
+    color: #000000;
+
+    border: 1px solid #b7b2b2;
+    border-radius: 20px;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Text",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+
+    box-sizing: border-box;
+
+    width: 50%;
+    margin-top: 2em;
+}
+
+.card-title {
+    margin: 0 0 .8rem;
+
+    color: #000000;
+
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.card-description {
+    margin: 0;
+
+    color: #6b7280;
+
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.6;
+}

@@ -1,0 +1,13 @@
+.btn-danger{
+
+    background:#DC2626;
+
+    color:white;
+
+}
+
+.btn-danger:hover{
+
+    background:#B91C1C;
+
+}

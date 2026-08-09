@@ -1,0 +1,66 @@
+/* ===========================
+   GLASS CARD
+   Use with:
+   class="card card-glass"
+=========================== */
+
+.card-glass {
+    background: rgba(255, 255, 255, 0.22);
+
+    border: 1px solid rgba(255, 255, 255, 0.45);
+
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.08),
+        inset 1px 1px 1px rgba(255, 255, 255, 0.55),
+        inset -1px -1px 1px rgba(255, 255, 255, 0.12);
+
+    color: #111111;
+}
+
+
+/* Optional softer highlight */
+
+.card-glass::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.35),
+            rgba(255, 255, 255, 0.06)
+        );
+
+    pointer-events: none;
+
+    opacity: 0.7;
+}
+
+
+/* Keep actual content above the glass overlay */
+
+.card-glass > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* Optional hover polish */
+
+.card-glass:hover {
+    background: rgba(255, 255, 255, 0.28);
+
+    border-color: rgba(255, 255, 255, 0.6);
+
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.11),
+        inset 1px 1px 1px rgba(255, 255, 255, 0.65),
+        inset -1px -1px 1px rgba(255, 255, 255, 0.16);
+}

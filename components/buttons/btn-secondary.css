@@ -1,0 +1,15 @@
+.btn-secondary{
+
+    background:white;
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+}
+
+.btn-secondary:hover{
+
+    background:#F8F8F8;
+
+}

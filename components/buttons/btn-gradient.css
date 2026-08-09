@@ -1,0 +1,23 @@
+.btn-gradient{
+
+    color:white;
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #2563EB,
+
+    #60A5FA
+
+    );
+
+}
+
+.btn-gradient:hover{
+
+    filter:brightness(110%);
+
+}

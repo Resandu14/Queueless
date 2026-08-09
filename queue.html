@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Queueless | Queue update</title>
+    <link rel="stylesheet" href="components/flow-pages.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="nav-shell">
+        <img class="corner corner-left" src="/public/curve.svg" alt="" />
+
+        <nav class="navbar">
+          <a href="queless.html" class="logo">Queueless</a>
+
+          <ul class="nav-links">
+            <li><a href="queless.html">Home</a></li>
+            <li><a href="order.html">Order</a></li>
+            <li><a href="queue.html">Queue</a></li>
+            <li><a href="complete.html">Done</a></li>
+          </ul>
+
+          <a href="complete.html" class="btn btn-secondary">Complete</a>
+        </nav>
+
+        <img class="corner corner-right" src="/public/curve.svg" alt="" />
+      </div>
+    </header>
+
+    <main class="flow-main">
+      <section class="queue-layout">
+        <article class="panel ticket-panel">
+          <p class="panel-step">03</p>
+          <h2>Your queue update</h2>
+
+          <div class="ticket">
+            <span>Your queue number</span>
+            <strong>#A-18</strong>
+
+            <hr />
+
+            <span>Est wait time</span>
+            <b>12 minutes</b>
+          </div>
+
+          <p class="ticket-note">
+            This will update automatically when the mock store confirms your
+            order.
+          </p>
+        </article>
+
+        <aside class="queue-actions">
+          <h2>Order accepted.</h2>
+          <p>
+            Bean &amp; Bloom is preparing your sample order. Current queue:
+            #A-14.
+          </p>
+
+          <div class="action-row">
+            <a class="ghost-action" href="order.html">Edit order</a>
+            <a class="danger-action" href="complete.html">Cancel order</a>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="flow-footer">Est wait time means estimated wait time.</footer>
+  </body>
+</html>

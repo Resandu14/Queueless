@@ -1,0 +1,17 @@
+.btn-outline{
+
+    background:transparent;
+
+    color:var(--text);
+
+    border:1px solid var(--text);
+
+}
+
+.btn-outline:hover{
+
+    background:#111827;
+
+    color:white;
+
+}

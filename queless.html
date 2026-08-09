@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Queueless | Order ahead, arrive on time</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="nav-shell">
+        <img class="corner corner-left" src="/public/curve.svg" alt="" />
+
+        <nav class="navbar">
+          <a href="queless.html" class="logo">Queueless</a>
+
+          <ul class="nav-links">
+            <li><a href="queless.html">Home</a></li>
+            <li><a href="#stores">Stores</a></li>
+            <li><a href="#flow">How it works</a></li>
+            <li><a href="#help">Help</a></li>
+          </ul>
+
+          <a href="order.html" class="btn btn-secondary">Place order</a>
+        </nav>
+
+        <img class="corner corner-right" src="/public/curve.svg" alt="" />
+      </div>
+    </header>
+
+    <main id="home" class="page-shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Order first. Walk in later.</p>
+
+          <h1 class="hero-title">
+            Skip the queue
+            <span
+              class="title-image"
+              role="img"
+              aria-label="Store counter"
+            ></span>
+            without losing your place.
+          </h1>
+
+          <p class="intro">
+            Search a store, describe what you need, then get a queue number and
+            estimated wait time after the business accepts your order.
+          </p>
+
+          <div class="hero-actions">
+            <a class="primary-link" href="order.html">Start an order</a>
+            <a class="secondary-link" href="#stores">Browse mock stores</a>
+          </div>
+        </div>
+
+        <aside class="hero-card" aria-label="Queue preview">
+          <div class="phone-frame">
+            <div class="phone-topline">
+              <span>Bean &amp; Bloom</span>
+              <b>Accepted</b>
+            </div>
+
+            <div class="queue-orbit">
+              <span>Your number</span>
+              <strong>#A-18</strong>
+            </div>
+
+            <div class="mini-grid">
+              <div>
+                <span>Now serving</span>
+                <strong>#A-14</strong>
+              </div>
+              <div>
+                <span>Est wait time</span>
+                <strong>12 min</strong>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="marquee-band" aria-label="Queueless order stages">
+        <div class="marquee-track">
+          <span>Search store</span>
+          <span>Describe order</span>
+          <span>Get accepted</span>
+          <span>Track queue</span>
+          <span>Collect on time</span>
+          <span>Search store</span>
+          <span>Describe order</span>
+          <span>Get accepted</span>
+          <span>Track queue</span>
+          <span>Collect on time</span>
+        </div>
+      </section>
+
+      <section class="store-section" id="stores">
+        <div class="section-heading">
+          <p class="eyebrow">Mock stores near you</p>
+          <h2>Pick the place before the line picks your afternoon.</h2>
+          <a class="view-link" href="order.html">Order from a mock store</a>
+        </div>
+
+        <div class="store-grid">
+          <article class="store-card feature-card">
+            <div class="store-image cafe-image"></div>
+            <div class="card-body">
+              <p class="category">Cafe</p>
+              <h3>Bean &amp; Bloom</h3>
+              <p>Colombo 07, mock location</p>
+              <div class="queue-info">
+                <span>Est wait time</span>
+                <strong>12 min</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="store-card">
+            <div class="store-image market-image"></div>
+            <div class="card-body">
+              <p class="category">Market</p>
+              <h3>FreshMart Express</h3>
+              <p>Liberty Arcade, mock location</p>
+              <div class="queue-info">
+                <span>Est wait time</span>
+                <strong>18 min</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="store-card">
+            <div class="store-image bakery-image"></div>
+            <div class="card-body">
+              <p class="category">Bakery</p>
+              <h3>City Bakes</h3>
+              <p>Union Lane, mock location</p>
+              <div class="queue-info">
+                <span>Est wait time</span>
+                <strong>7 min</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="store-card wide-card">
+            <div class="card-body split-body">
+              <div>
+                <p class="category">Prototype signal</p>
+                <h3>Every card uses mock queue data.</h3>
+              </div>
+              <a class="secondary-link dark-link" href="queue.html">
+                Preview queue
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="flow-section" id="flow">
+        <div class="flow-heading">
+          <p class="eyebrow">The order path</p>
+          <h2>Three quiet steps between wanting something and collecting it.</h2>
+        </div>
+
+        <div class="flow-accordion">
+          <article class="flow-panel active-panel">
+            <span>Search</span>
+            <h3>Choose the right store.</h3>
+            <p>Find a mock store and start from its current queue context.</p>
+          </article>
+
+          <article class="flow-panel">
+            <span>Order</span>
+            <h3>Describe what you need.</h3>
+            <p>The request is sent as plain text for the business to accept.</p>
+          </article>
+
+          <article class="flow-panel">
+            <span>Track</span>
+            <h3>Watch the queue move.</h3>
+            <p>See your number, current number, and estimated wait time.</p>
+          </article>
+
+          <article class="flow-panel">
+            <span>Collect</span>
+            <h3>Arrive when it matters.</h3>
+            <p>The final screen confirms when the mock order is complete.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta-section">
+        <h2>Make the queue something you check, not somewhere you stand.</h2>
+        <a class="primary-link light-link" href="order.html">Place a mock order</a>
+      </section>
+    </main>
+
+    <footer id="help">
+      <span>Queueless</span>
+      <p>Hackathon prototype using mock stores, mock orders, and mock wait times.</p>
+      <a href="#home">Back to top</a>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+      if (window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.from(".hero-copy > *", {
+          opacity: 0,
+          y: 28,
+          duration: 0.9,
+          stagger: 0.12,
+          ease: "power3.out"
+        });
+
+        gsap.from(".store-card", {
+          scrollTrigger: {
+            trigger: ".store-grid",
+            start: "top 78%"
+          },
+          opacity: 0,
+          scale: 0.88,
+          y: 28,
+          duration: 0.8,
+          stagger: 0.08,
+          ease: "power3.out"
+        });
+
+        gsap.to(".flow-panel", {
+          scrollTrigger: {
+            trigger: ".flow-section",
+            start: "top 70%",
+            end: "bottom 60%",
+            scrub: true
+          },
+          opacity: 1,
+          y: 0,
+          stagger: 0.2
+        });
+      }
+    </script>
+  </body>
+</html>

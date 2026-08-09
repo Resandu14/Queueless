@@ -1,0 +1,32 @@
+.bg-grid-purple {
+    background-color: #ffffff;
+
+    background-image:
+        linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0.065) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.065) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to right,
+            #ffffff 0%,
+            #ffffff 31%,
+            #fdfcff 38%,
+            #f8f5ff 45%,
+            #f0eaff 54%,
+            #e7ddff 64%,
+            #ded0ff 75%,
+            #d8c8ff 86%,
+            #d5c4ff 100%
+        );
+
+    background-size:
+        120px 100%,
+        100% 80px,
+        100% 100%;
+}

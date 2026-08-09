@@ -1,0 +1,16 @@
+.bg-purple-fade {
+    width: calc(100% - 14px);
+    height: 825px;
+
+    background: linear-gradient(
+        to top,
+        #ffffff 0%,
+        #ffffff 47%,
+        #fbfaff 53%,
+        #f3effe 62%,
+        #e5dcfc 70%,
+        #d4c6fa 79%,
+        #c3aff8 88%,
+        #b096f6 100%
+    );
+}

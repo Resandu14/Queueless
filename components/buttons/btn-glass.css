@@ -1,0 +1,25 @@
+.btn-glass{
+
+    color:#111;
+
+    backdrop-filter:blur(20px);
+
+    background:
+
+    rgba(255,255,255,.25);
+
+    border:
+
+    1px solid rgba(255,255,255,.35);
+
+    box-shadow:
+
+    0 8px 30px rgba(0,0,0,.08);
+
+}
+
+.btn-glass:hover{
+
+    transform:translateY(-2px);
+
+}

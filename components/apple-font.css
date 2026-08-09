@@ -1,0 +1,23 @@
+:root{
+
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+
+    --surface:#FFFFFF;
+    --surface-hover:#F5F5F5;
+
+    --text:#111827;
+    --border:#E5E7EB;
+
+}
+
+body{
+
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Helvetica Neue",
+    sans-serif;
+
+}

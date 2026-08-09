@@ -1,0 +1,66 @@
+/* ===========================
+   NAVBAR
+=========================== */
+
+.navbar{
+    height: 80px;
+    font-family: "Poppins";
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-transform: uppercase;
+}
+
+/* Logo */
+
+.logo{
+    text-decoration: none;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* Navigation Links */
+
+.nav-links{
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+
+    list-style: none;
+}
+
+.nav-links a{
+    text-decoration: none;
+    color: #4b5563;
+    font-size: 1.3rem;
+    font-weight: 500;
+
+    transition: color .2s ease;
+}
+
+.nav-links a:hover{
+    color: #2563eb;
+}
+
+/* CTA Button */
+
+.nav-btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.1rem 2.2rem;
+    border-radius: 999px;
+    background: #2563eb;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.3srem;
+    font-weight: bold;
+    transition: .2s ease;
+}
+
+.nav-btn:hover{
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
