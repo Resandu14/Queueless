@@ -1,22 +1,35 @@
 {
     "version": 2,
-    "cleanUrls": true,
-    "rewrites": [
+    "builds": [
         {
-            "source": "/api/:path*",
-            "destination": "/api/[...path].js"
+            "src": "api/**/*.js",
+            "use": "@vercel/node"
         },
         {
-            "source": "/",
-            "destination": "/queless.html"
+            "src": "**/*",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/api/(.*)",
+            "dest": "/api/[...path].js"
         },
         {
-            "source": "/business",
-            "destination": "/business-portal/index.html"
+            "src": "/",
+            "dest": "/queless.html"
         },
         {
-            "source": "/business-portal",
-            "destination": "/business-portal/index.html"
+            "src": "/business/?",
+            "dest": "/business-portal/index.html"
+        },
+        {
+            "src": "/business-portal/?",
+            "dest": "/business-portal/index.html"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/$1"
         }
     ]
 }
