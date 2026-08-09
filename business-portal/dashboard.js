@@ -140,7 +140,7 @@ async function loadDashboard() {
     renderDashboard(result);
   } catch (error) {
     if (error.message.includes("sign in")) {
-      window.location.href = "index.html";
+      window.location.href = "/business";
       return;
     }
     showToast(error.message);
@@ -157,7 +157,7 @@ async function initialiseDashboard() {
     await loadDashboard();
     window.setInterval(loadDashboard, 10_000);
   } catch {
-    window.location.href = "index.html";
+    window.location.href = "/business";
   }
 }
 
@@ -177,7 +177,7 @@ if (loginForm) {
         method: "POST",
         body: JSON.stringify(Object.fromEntries(formData.entries()))
       });
-      window.location.href = "dashboard.html";
+      window.location.href = "/business-portal/dashboard.html";
     } catch (error) {
       setMessage(loginMessage, error.message, "error");
       submitButton.disabled = false;
@@ -191,7 +191,7 @@ if (logoutButton) {
     try {
       await getJson("/api/auth/logout", { method: "POST" });
     } finally {
-      window.location.href = "index.html";
+      window.location.href = "/business";
     }
   });
 }

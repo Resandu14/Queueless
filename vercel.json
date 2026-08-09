@@ -28,6 +28,10 @@
             "dest": "/business-portal/index.html"
         },
         {
+            "src": "/dashboard.html",
+            "dest": "/business-portal/dashboard.html"
+        },
+        {
             "src": "/(.*)",
             "dest": "/$1"
         }
