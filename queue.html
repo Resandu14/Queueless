@@ -10,7 +10,7 @@
   <body>
     <header class="header">
       <div class="nav-shell">
-        <img class="corner corner-left" src="/public/curve.svg" alt="" />
+        <img class="corner corner-left" src="public/curve.svg" alt="" />
 
         <nav class="navbar">
           <a href="queless.html" class="logo">Queueless</a>
@@ -18,14 +18,14 @@
           <ul class="nav-links">
             <li><a href="queless.html">Home</a></li>
             <li><a href="order.html">Order</a></li>
-            <li><a href="queue.html">Queue</a></li>
+            <li><a href="queue.html" aria-current="page">Queue</a></li>
             <li><a href="complete.html">Done</a></li>
           </ul>
 
           <a href="complete.html" class="btn btn-secondary">Complete</a>
         </nav>
 
-        <img class="corner corner-right" src="/public/curve.svg" alt="" />
+        <img class="corner corner-right" src="public/curve.svg" alt="" />
       </div>
     </header>
 
@@ -37,35 +37,35 @@
 
           <div class="ticket">
             <span>Your queue number</span>
-            <strong>#A-18</strong>
+            <strong data-queue-number>—</strong>
 
             <hr />
 
             <span>Est wait time</span>
-            <b>12 minutes</b>
+            <b data-queue-wait>Loading…</b>
           </div>
 
           <p class="ticket-note">
-            This will update automatically when the mock store confirms your
-            order.
+            This updates automatically when the business confirms, fulfils, or
+            cancels your order.
           </p>
         </article>
 
         <aside class="queue-actions">
-          <h2>Order accepted.</h2>
+          <h2 data-queue-heading>Finding your order…</h2>
           <p>
-            Bean &amp; Bloom is preparing your sample order. Current queue:
-            #A-14.
+            <span data-queue-description>Connecting to the business dashboard.</span>
           </p>
 
           <div class="action-row">
             <a class="ghost-action" href="order.html">Edit order</a>
-            <a class="danger-action" href="complete.html">Cancel order</a>
+            <a class="danger-action" href="order.html">Place another order</a>
           </div>
         </aside>
       </section>
     </main>
 
     <footer class="flow-footer">Est wait time means estimated wait time.</footer>
+    <script src="queue.js"></script>
   </body>
 </html>

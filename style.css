@@ -1,20 +1,20 @@
-@import "/components/buttons/base-btn.css";
-@import "/components/buttons/btn-secondary.css";
+@import "components/buttons/base-btn.css";
+@import "components/buttons/btn-secondary.css";
 
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap");
 
 :root {
-  --bg: #f3f0e8;
-  --ink: #10100f;
-  --text: #171715;
-  --muted: #6b6760;
-  --panel: #fffaf0;
-  --line: rgba(16, 16, 15, 0.16);
+  --bg: #10100f;
+  --ink: #f7f2e8;
+  --text: #f7f2e8;
+  --muted: #b7b1a7;
+  --panel: #1a1a18;
+  --line: rgba(255, 255, 255, 0.16);
   --dark: #10100f;
-  --cream: #fff7e6;
-  --green: #728064;
-  --blue: #596f83;
-  --red: #a4483b;
+  --cream: #f7f2e8;
+  --green: #afc69e;
+  --blue: #9fb7ca;
+  --red: #e18b7f;
 }
 
 * {
@@ -30,9 +30,9 @@ body {
   overflow-x: hidden;
   color: var(--text);
   background:
-    radial-gradient(circle at 12% 8%, rgba(114, 128, 100, 0.24), transparent 24rem),
-    radial-gradient(circle at 86% 18%, rgba(89, 111, 131, 0.18), transparent 28rem),
-    linear-gradient(180deg, #f8f5ed 0%, var(--bg) 46%, #e6e0d4 100%);
+    radial-gradient(circle at 12% 8%, rgba(114, 128, 100, 0.2), transparent 24rem),
+    radial-gradient(circle at 86% 18%, rgba(89, 111, 131, 0.15), transparent 28rem),
+    linear-gradient(180deg, #151513 0%, var(--bg) 46%, #0d0d0c 100%);
   font-family: "Outfit", Arial, sans-serif;
 }
 
@@ -103,6 +103,10 @@ footer {
 }
 
 .nav-links a:hover {
+  color: #ffffff;
+}
+
+.nav-links a[aria-current="page"] {
   color: #ffffff;
 }
 
@@ -204,14 +208,14 @@ footer {
 }
 
 .primary-link {
-  color: #ffffff;
-  background: var(--dark);
+  color: #10100f;
+  background: var(--cream);
 }
 
 .secondary-link {
   border: 1px solid var(--line);
-  color: var(--dark);
-  background: rgba(255, 255, 255, 0.4);
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .primary-link:hover,
@@ -225,20 +229,20 @@ footer {
   justify-self: end;
   width: min(100%, 390px);
   padding: 16px;
-  border: 1px solid rgba(16, 16, 15, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 34px;
-  background: rgba(255, 250, 240, 0.68);
-  box-shadow: 0 30px 90px rgba(16, 16, 15, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(18px);
 }
 
 .phone-frame {
   min-height: 520px;
   padding: 24px;
-  border: 10px solid var(--dark);
+  border: 10px solid #080807;
   border-radius: 28px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 247, 230, 0.94)),
+    linear-gradient(180deg, rgba(24, 24, 22, 0.9), rgba(16, 16, 15, 0.94)),
     url("https://picsum.photos/seed/order-board/520/900") center/cover;
   background-blend-mode: screen;
 }
@@ -273,7 +277,7 @@ footer {
   place-items: center;
   min-height: 230px;
   margin: 34px 0;
-  border: 1px dashed rgba(16, 16, 15, 0.28);
+  border: 1px dashed rgba(255, 255, 255, 0.28);
   border-radius: 50%;
   text-align: center;
 }
@@ -294,7 +298,7 @@ footer {
   flex: 1;
   padding: 16px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.74);
+  background: rgba(255, 255, 255, 0.09);
 }
 
 .mini-grid strong {
@@ -370,7 +374,7 @@ footer {
   justify-self: end;
   align-self: end;
   font-weight: 800;
-  color: var(--dark);
+  color: var(--ink);
 }
 
 .store-grid {
@@ -391,7 +395,7 @@ footer {
   overflow: hidden;
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  background: rgba(255, 250, 240, 0.72);
+  background: rgba(255, 255, 255, 0.055);
   transition:
     transform 0.28s ease,
     background 0.28s ease;
@@ -607,7 +611,7 @@ footer {
 }
 
 footer span {
-  color: var(--dark);
+  color: var(--ink);
   font-weight: 800;
 }
 
@@ -673,21 +677,38 @@ footer a {
   }
 
   .navbar {
-    min-height: 60px;
-    gap: 12px;
-    padding: 0 14px;
+    display: grid;
+    grid-template-areas:
+      "logo cta"
+      "links links";
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 0;
+    gap: 10px 12px;
+    padding: 12px 14px 10px;
     border-radius: 0 0 20px 20px;
   }
 
   .logo {
+    grid-area: logo;
     font-size: 1.3rem;
   }
 
   .nav-links {
+    grid-area: links;
+    display: flex;
+    width: 100%;
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .nav-links::-webkit-scrollbar {
     display: none;
   }
 
   .navbar .btn {
+    grid-area: cta;
     min-height: 38px;
     padding: 0 13px;
     border-radius: 999px;

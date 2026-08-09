@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Queueless for Business helps stores manage incoming queue orders."
+    />
+    <title>Queueless for Business | Sign in</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body class="portal-login">
+    <header class="header">
+      <div class="nav-shell">
+        <nav class="navbar" aria-label="Business portal navigation">
+          <a href="index.html" class="logo">Queueless <span>for business</span></a>
+          <a href="../queless.html" class="customer-link">Customer site</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="login-main">
+      <section class="login-copy" aria-labelledby="login-heading">
+        <p class="eyebrow">Your store, without the line</p>
+        <h1 id="login-heading">Keep every order moving.</h1>
+        <p>
+          See new requests, prepare orders in sequence, and keep a clear
+          record of every fulfilled or cancelled order.
+        </p>
+
+        <div class="signal-list" aria-label="Business portal features">
+          <div><span class="signal-dot incoming-dot"></span> Incoming orders in one place</div>
+          <div><span class="signal-dot fulfilled-dot"></span> Fulfilment history for today</div>
+          <div><span class="signal-dot cancelled-dot"></span> Cancelled-order visibility</div>
+        </div>
+      </section>
+
+      <section class="login-card" aria-label="Business owner sign in">
+        <p class="panel-kicker">Store access</p>
+        <h2>Welcome back.</h2>
+        <p class="panel-intro">Sign in to manage your store's queue.</p>
+
+        <form class="login-form" data-login-form>
+          <label class="field">
+            Work email
+            <input
+              name="email"
+              type="email"
+              autocomplete="email"
+              placeholder="owner@beanandbloom.lk"
+              required
+            />
+          </label>
+
+          <label class="field">
+            Password
+            <input
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Enter your password"
+              minlength="6"
+              required
+            />
+          </label>
+
+          <button class="primary-action" type="submit">Open dashboard</button>
+        </form>
+
+        <p class="form-message" data-login-message role="status" aria-live="polite"></p>
+        <p class="demo-note">Demo account: owner@beanandbloom.lk · BeanBloom!2026</p>
+      </section>
+    </main>
+
+    <footer class="portal-footer">
+      <span>Queueless for Business</span>
+      <p>Prototype dashboard using mock order data.</p>
+    </footer>
+
+    <script src="dashboard.js"></script>
+  </body>
+</html>

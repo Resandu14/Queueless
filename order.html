@@ -10,14 +10,14 @@
   <body>
     <header class="header">
       <div class="nav-shell">
-        <img class="corner corner-left" src="/public/curve.svg" alt="" />
+        <img class="corner corner-left" src="public/curve.svg" alt="" />
 
         <nav class="navbar">
           <a href="queless.html" class="logo">Queueless</a>
 
           <ul class="nav-links">
             <li><a href="queless.html">Home</a></li>
-            <li><a href="order.html">Order</a></li>
+            <li><a href="order.html" aria-current="page">Order</a></li>
             <li><a href="queue.html">Queue</a></li>
             <li><a href="complete.html">Done</a></li>
           </ul>
@@ -25,7 +25,7 @@
           <a href="queue.html" class="btn btn-secondary">Track order</a>
         </nav>
 
-        <img class="corner corner-right" src="/public/curve.svg" alt="" />
+        <img class="corner corner-right" src="public/curve.svg" alt="" />
       </div>
     </header>
 
@@ -35,25 +35,52 @@
           <p class="panel-step">02</p>
           <h2>Place your order</h2>
 
-          <form class="form-stack" action="queue.html">
+          <form class="form-stack" data-order-form>
             <label class="field">
               Store
-              <select aria-label="Choose a store">
-                <option>Bean &amp; Bloom</option>
-                <option>FreshMart Express</option>
-                <option>City Bakes</option>
+              <select name="businessSlug" aria-label="Choose a store" required data-store-select>
+                <option value="bean-bloom">Bean &amp; Bloom · Colombo 07</option>
               </select>
+            </label>
+
+            <label class="field">
+              Your name
+              <input
+                name="customerName"
+                aria-label="Your name"
+                autocomplete="name"
+                placeholder="Example: Nethmi Perera"
+                minlength="2"
+                required
+              />
+            </label>
+
+            <label class="field">
+              Phone number
+              <input
+                name="customerPhone"
+                type="tel"
+                aria-label="Phone number"
+                autocomplete="tel"
+                placeholder="Example: +94 77 123 4567"
+                minlength="7"
+                required
+              />
             </label>
 
             <label class="field">
               Your order
               <textarea
+                name="orderText"
                 aria-label="Describe your order"
                 placeholder="Example: 2 iced lattes, one without sugar"
+                minlength="3"
+                required
               ></textarea>
             </label>
 
-            <button class="primary-action" type="submit">Place order</button>
+            <button class="primary-action" type="submit" data-submit-order>Place order</button>
+            <p class="form-message" data-order-message role="status" aria-live="polite"></p>
           </form>
         </article>
 
@@ -68,6 +95,7 @@
       </section>
     </main>
 
-    <footer class="flow-footer">Mock data only for the hackathon prototype.</footer>
+    <footer class="flow-footer">Orders are sent directly to the selected mock business.</footer>
+    <script src="order.js"></script>
   </body>
 </html>

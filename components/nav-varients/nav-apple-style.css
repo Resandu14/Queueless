@@ -97,6 +97,10 @@ header{
     color:white
 }
 
+.navbar .nav-links a[aria-current="page"] {
+    color: white;
+}
+
 /* Button */
 
 .navbar .btn,
@@ -148,22 +152,39 @@ header{
     }
 
     .navbar {
-        min-height: 60px;
-        gap: 12px;
-        padding: 0 14px;
+        display: grid;
+        grid-template-areas:
+          "logo cta"
+          "links links";
+        grid-template-columns: minmax(0, 1fr) auto;
+        min-height: 0;
+        gap: 10px 12px;
+        padding: 12px 14px 10px;
         border-radius: 0 0 20px 20px;
     }
 
     .navbar .logo {
+        grid-area: logo;
         font-size: 1.3rem;
     }
 
     .navbar .nav-links {
+        grid-area: links;
+        display: flex;
+        width: 100%;
+        gap: 14px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+    }
+
+    .navbar .nav-links::-webkit-scrollbar {
         display: none;
     }
 
     .navbar .btn,
     .navbar .nav-btn {
+        grid-area: cta;
         min-height: 38px;
         padding: .55rem .8rem;
         border-radius: 999px;

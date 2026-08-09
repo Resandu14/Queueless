@@ -1,0 +1,10 @@
+{
+  "name": "queueless",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Queue ordering prototype with a customer and business portal.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  }
+}

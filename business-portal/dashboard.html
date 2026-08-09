@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Business dashboard for Queueless queue orders."
+    />
+    <title>Queueless for Business | Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body class="portal-dashboard">
+    <header class="header dashboard-header">
+      <div class="nav-shell">
+        <nav class="navbar" aria-label="Business dashboard navigation">
+          <a href="dashboard.html" class="logo">Queueless <span>for business</span></a>
+
+          <div class="nav-links" aria-label="Dashboard sections">
+            <a href="#overview" aria-current="page">Overview</a>
+            <a href="#incoming">Incoming</a>
+            <a href="#fulfilled">Fulfilled</a>
+            <a href="#cancelled">Cancelled</a>
+          </div>
+
+          <button class="logout-button" type="button" data-logout>Sign out</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <section class="dashboard-intro" id="overview" aria-labelledby="dashboard-heading">
+        <div>
+          <p class="eyebrow">Bean &amp; Bloom · Colombo 07</p>
+          <h1 id="dashboard-heading">Good morning, <span data-owner-name>there</span>.</h1>
+          <p>Here is how your queue is moving today.</p>
+        </div>
+        <div class="today-card" aria-label="Today's service status">
+          <span class="status-dot"></span>
+          <div>
+            <b>Taking orders</b>
+            <small>Updated just now</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="metrics-grid" aria-label="Today's order summary">
+        <article class="metric-card incoming-metric">
+          <span>New orders</span>
+          <strong data-stat="new">3</strong>
+          <small>Need your attention</small>
+        </article>
+        <article class="metric-card preparing-metric">
+          <span>Preparing now</span>
+          <strong data-stat="preparing">5</strong>
+          <small>Average wait: 11 min</small>
+        </article>
+        <article class="metric-card fulfilled-metric">
+          <span>Fulfilled today</span>
+          <strong data-stat="fulfilled">26</strong>
+          <small>92% collected on time</small>
+        </article>
+        <article class="metric-card cancelled-metric">
+          <span>Cancelled today</span>
+          <strong data-stat="cancelled">3</strong>
+          <small>10% of today's orders</small>
+        </article>
+      </section>
+
+      <section class="orders-layout" id="incoming" aria-labelledby="incoming-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Live queue</p>
+            <h2 id="incoming-heading">Incoming orders</h2>
+          </div>
+          <span class="order-count"><b data-stat="new">3</b> awaiting action</span>
+        </div>
+
+        <div class="incoming-list" data-incoming-list>
+          <article
+            class="incoming-order"
+            data-order-number="#A-22"
+            data-customer="Nethmi Perera"
+            data-order="2 iced lattes, one without sugar"
+            data-time="10:46 AM"
+          >
+            <div class="order-number">#A-22</div>
+            <div class="order-details">
+              <div class="order-title-row">
+                <h3>Nethmi Perera</h3>
+                <span class="order-status awaiting">Awaiting confirmation</span>
+              </div>
+              <p>2 iced lattes, one without sugar</p>
+              <small>Placed at 10:46 AM · Est. prep time: 8 min</small>
+            </div>
+            <div class="order-actions">
+              <button class="text-button reject-order" type="button">Cancel</button>
+              <button class="dark-button accept-order" type="button">Accept order</button>
+            </div>
+          </article>
+
+          <article
+            class="incoming-order"
+            data-order-number="#A-21"
+            data-customer="Amal Fernando"
+            data-order="Cappuccino and almond croissant"
+            data-time="10:42 AM"
+          >
+            <div class="order-number">#A-21</div>
+            <div class="order-details">
+              <div class="order-title-row">
+                <h3>Amal Fernando</h3>
+                <span class="order-status awaiting">Awaiting confirmation</span>
+              </div>
+              <p>Cappuccino and almond croissant</p>
+              <small>Placed at 10:42 AM · Est. prep time: 10 min</small>
+            </div>
+            <div class="order-actions">
+              <button class="text-button reject-order" type="button">Cancel</button>
+              <button class="dark-button accept-order" type="button">Accept order</button>
+            </div>
+          </article>
+
+          <article
+            class="incoming-order"
+            data-order-number="#A-20"
+            data-customer="Sajini Jayasinghe"
+            data-order="Flat white, banana bread"
+            data-time="10:38 AM"
+          >
+            <div class="order-number">#A-20</div>
+            <div class="order-details">
+              <div class="order-title-row">
+                <h3>Sajini Jayasinghe</h3>
+                <span class="order-status awaiting">Awaiting confirmation</span>
+              </div>
+              <p>Flat white, banana bread</p>
+              <small>Placed at 10:38 AM · Est. prep time: 7 min</small>
+            </div>
+            <div class="order-actions">
+              <button class="text-button reject-order" type="button">Cancel</button>
+              <button class="dark-button accept-order" type="button">Accept order</button>
+            </div>
+          </article>
+        </div>
+
+        <p class="empty-state" data-empty-incoming hidden>All caught up. There are no orders waiting for action.</p>
+      </section>
+
+      <section class="history-grid" aria-label="Order history">
+        <article class="history-card" id="fulfilled">
+          <div class="history-heading">
+            <div>
+              <p class="eyebrow">Completed</p>
+              <h2>Fulfilled orders</h2>
+            </div>
+            <span class="history-total"><b data-stat="fulfilled">26</b> today</span>
+          </div>
+
+          <div class="table-wrap">
+            <table id="fulfilled-orders">
+              <thead>
+                <tr>
+                  <th>Queue</th>
+                  <th>Customer &amp; order</th>
+                  <th>Completed</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>#A-19</b></td>
+                  <td><span>Kavindu Silva</span><small>Mocha, cheese toastie</small></td>
+                  <td>10:35 AM</td>
+                </tr>
+                <tr>
+                  <td><b>#A-18</b></td>
+                  <td><span>Leah Wijesinghe</span><small>2 cold brews</small></td>
+                  <td>10:27 AM</td>
+                </tr>
+                <tr>
+                  <td><b>#A-16</b></td>
+                  <td><span>Ruvin Dias</span><small>Oat latte, brownie</small></td>
+                  <td>10:15 AM</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="history-card cancelled-card" id="cancelled">
+          <div class="history-heading">
+            <div>
+              <p class="eyebrow">Needs review</p>
+              <h2>Cancelled orders</h2>
+            </div>
+            <span class="history-total"><b data-stat="cancelled">3</b> today</span>
+          </div>
+
+          <div class="table-wrap">
+            <table id="cancelled-orders">
+              <thead>
+                <tr>
+                  <th>Queue</th>
+                  <th>Customer &amp; order</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>#A-17</b></td>
+                  <td><span>Rishi Patel</span><small>Double espresso</small></td>
+                  <td>Customer request</td>
+                </tr>
+                <tr>
+                  <td><b>#A-11</b></td>
+                  <td><span>Tharushi Deen</span><small>Iced matcha latte</small></td>
+                  <td>Out of stock</td>
+                </tr>
+                <tr>
+                  <td><b>#A-06</b></td>
+                  <td><span>Dulanjan Perera</span><small>3 pain au chocolat</small></td>
+                  <td>Customer request</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <div class="toast" data-toast role="status" aria-live="polite"></div>
+
+    <footer class="portal-footer">
+      <span>Bean &amp; Bloom · Queueless for Business</span>
+      <p>All orders shown are mock prototype data.</p>
+    </footer>
+
+    <script src="dashboard.js"></script>
+  </body>
+</html>
